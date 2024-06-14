@@ -20,16 +20,11 @@ class GameScene extends Phaser.Scene {
     create() {
         // dino
         this.dino = this.physics.add.sprite(200, 343, "dino").setOrigin(0, 0).setScale(0.17, 0.25);
-        // console.log(this.dino.width, this.dino.height);
         this.dino.setSize(this.dino.width * 0.6, this.dino.height * 0.8, false).setOffset(100, 50);
         this.dino.setGravityY(850);
-        // this.add.image(200,300,"tile").setOrigin(0,0);
         // ground
         this.ground = this.physics.add.group();
-        // this.bird = this.physics.add.sprite(350, 250, "bird");
         this.animation();
-        // this.bird.anims.play("fly");
-        // this.bird.setVelocityX(this.birdSpeed);
         // scoring
         this.scoreText = this.add.text(600, 25, "SCORE:0", {
             fontSize: "28px",
@@ -50,13 +45,11 @@ class GameScene extends Phaser.Scene {
         this.spawnBird();
         this.spawnPlant();
         this.dino.anims.play("idle");
-        // this.dino.setCollideWorldBounds(true);
         this.physics.add.collider(this.dino, this.ground);
         this.physics.add.collider(this.dino, this.birds, this.gameOver, null, this);
         this.physics.add.collider(this.dino, this.plants, this.gameOver, null, this);
         this.physics.add.collider(this.plants, this.ground);
         this.cursors = this.input.keyboard.createCursorKeys();
-        // console.log(this.cursors);
     }
     gameOver() {
         console.log("Game Over");
@@ -109,7 +102,7 @@ class GameScene extends Phaser.Scene {
             callback: () => {
                 let scale = Math.random();
                 if (scale <= 0.4) {
-                    // create 2 plants
+                    // creates 2 plants
                     scale = 0.6;
                     this.generatePlant(scale);
                 } else if (scale > 0.9) {
@@ -153,9 +146,6 @@ class GameScene extends Phaser.Scene {
                 }
             })
         }
-        // console.log("pSize: ",this.plants.children.size)
-
-
 
     }
     handleScore() {
@@ -215,12 +205,11 @@ class GameScene extends Phaser.Scene {
 
         this.handleInput();
         // create endless ground
-        // console.log("I ran");
         this.updateGround()
 
     }
     handleInput() {
-        // control
+        // controls
         if (this.cursors.space.isDown && this.dino.body.touching.down) {
             this.dino.setVelocityY(-500);
             this.dino.anims.play("jump");
@@ -267,18 +256,17 @@ class TitleScene extends Phaser.Scene {
         this.load.image("tile", "assets/tile.png");
     }
     create() {
-        // alert("Hello from Title");
         const Title = this.add.text(400, 200, "START NEW GAME", {
             fontSize: 45,
             fontFamily: "Arial Black",
-            stroke: "gray",
+            stroke: "black",
             strokeThickness: 5
         })
         Title.setOrigin(0.5, 0.5);
         const spaceText = this.add.text(400, 250, "PRESS SPACE TO START", {
             fontSize: 22,
             fontFamily: "Arial Black",
-            stroke: "gray",
+            stroke: "black",
             strokeThickness: 5
         })
         spaceText.setOrigin(0.5, 0.5)
@@ -288,7 +276,6 @@ class TitleScene extends Phaser.Scene {
         this.input.keyboard.once("keydown-SPACE", () => {
             this.scene.start("game");
         })
-        // console.log("hello from title");
     }
 
     addBase(x) {
@@ -311,18 +298,17 @@ class RestartScene extends Phaser.Scene {
         this.tileHeight = 64;
     }
     create() {
-        // alert("Hello from Title");
         const Title = this.add.text(400, 200, "RESTART GAME", {
             fontSize: 45,
             fontFamily: "Arial Black",
-            stroke: "gray",
+            stroke: "black",
             strokeThickness: 5
         })
         Title.setOrigin(0.5, 0.5);
         const spaceText = this.add.text(400, 250, "PRESS SPACE TO RESTART", {
             fontSize: 22,
             fontFamily: "Arial Black",
-            stroke: "gray",
+            stroke: "black",
             strokeThickness: 5
         })
         spaceText.setOrigin(0.5, 0.5)
@@ -332,7 +318,6 @@ class RestartScene extends Phaser.Scene {
         this.input.keyboard.once("keydown-SPACE", () => {
             this.scene.start("game");
         })
-        // console.log("hello from title");
     }
 
     addBase(x) {
