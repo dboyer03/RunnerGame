@@ -12,10 +12,14 @@ class GameScene extends Phaser.Scene {
     // load assets
     preload() {
         this.load.image("plant", "assets/cactus.png");
-        this.load.atlas("dino", "assets/atlas/sprite.png", "assets/atlas/sprite.json");
-        // this.load.spritesheet("bird", "assets/bird.png", { frameWidth: 150, frameHeight: 108 });
+        this.load.image("dino", "assets/alienGreen_stand.png");
         this.load.image("bird", "assets/bat.png");
         this.load.audioSprite("sfx", "assets/fx_mixdown.json", ["assets/fx_mixdown.mp3", "assets/fx_mixdown.ogg"])
+        this.load.image("bird0", "assets/bat.png");
+        this.load.image("bird1", "assets/bat_fly.png");
+        this.load.image("walk0", "assets/alienGreen_walk1.png");
+        this.load.image("walk1", "assets/alienGreen_walk2.png");
+        this.load.image("alienjump", "assets/alienGreen_jump.png");
     }
     // create game entities
     create() {
@@ -174,32 +178,27 @@ class GameScene extends Phaser.Scene {
         // dino
         this.anims.create({
             key: "idle",
-            frames: this.anims.generateFrameNames("dino", {
-                start: 1,
-                end: 10,
-                prefix: "Idle_",
-                zeroPad: 2,
-                suffix: ".png",
-            }),
-            frameRate: 15,
+            frames: [
+                { key: "dino" },
+            ],
+            frameRate: 1,
             repeat: -1
         });
         this.anims.create({
             key: "run",
-            frames: this.anims
-                .generateFrameNames('dino', {
-                    start: 1, end: 8, zeroPad: 2,
-                    prefix: "Run_", suffix: ".png"
-                }),
-            frameRate: 15,
+            frames: [
+                { key: "walk0" },
+                { key: "walk1" },
+            ],
+            frameRate: 3, 
             repeat: -1
         });
         this.anims.create({
             key: "jump",
-            frames: this.anims.generateFrameNames('dino', {
-                start: 1, end: 12, zeroPad: 2, prefix: "Jump_", suffix: ".png"
-            }),
-            frameRate: 10,
+            frames: [
+                { key: "alienjump" },
+            ],
+            frameRate: 1, 
         });
     }
     update() {
@@ -254,8 +253,8 @@ class TitleScene extends Phaser.Scene {
         this.tileWidth = 64;
         this.tileHeight = 64;
         this.load.image("tile", "assets/tile.png");
-        this.load.image("bird0", "assets/bat.png");
-        this.load.image("bird1", "assets/bat_fly.png");
+        // this.load.image("bird0", "assets/bat.png");
+        // this.load.image("bird1", "assets/bat_fly.png");
     }
     create() {
         const Title = this.add.text(400, 200, "START NEW GAME", {
