@@ -1,8 +1,7 @@
-// alert("Hello From Script");
 class GameScene extends Phaser.Scene {
     init() {
-        this.tileWidth = 64;
-        this.tileHeight = 64;
+        this.tileWidth = 32;
+        this.tileHeight = 32;
         this.score = 0;
         this.birdSpeed = -350;
         this.birdDelay = 6000;
