@@ -24,7 +24,7 @@ class GameScene extends Phaser.Scene {
     // create game entities
     create() {
         // dino
-        this.dino = this.physics.add.sprite(200, 343, "dino").setOrigin(0, 0).setScale(0.17, 0.25);
+        this.dino = this.physics.add.sprite(200, 343, "dino").setOrigin(0, 0).setScale(0.5, 0.5);
         this.dino.setSize(this.dino.width * 0.6, this.dino.height * 0.8, false).setOffset(100, 50);
         this.dino.setGravityY(850);
         // ground
@@ -299,8 +299,8 @@ class RestartScene extends Phaser.Scene {
         this.tileHeight = 64;
     }
     create() {
-        const Title = this.add.text(400, 200, "RESTART GAME", {
-            fontSize: 45,
+        const Title = this.add.text(400, 200, "Game By Marvel McDowell and Dylan Boyer With Thanks To KennyAssets", {
+            fontSize: 10,
             fontFamily: "Arial Black",
             stroke: "black",
             strokeThickness: 5
