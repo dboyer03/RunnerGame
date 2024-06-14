@@ -13,7 +13,8 @@ class GameScene extends Phaser.Scene {
     preload() {
         this.load.image("plant", "assets/cactus.png");
         this.load.atlas("dino", "assets/atlas/sprite.png", "assets/atlas/sprite.json");
-        this.load.spritesheet("bird", "assets/bird.png", { frameWidth: 150, frameHeight: 108 });
+        // this.load.spritesheet("bird", "assets/bird.png", { frameWidth: 150, frameHeight: 108 });
+        this.load.image("bird", "assets/bat.png");
         this.load.audioSprite("sfx", "assets/fx_mixdown.json", ["assets/fx_mixdown.mp3", "assets/fx_mixdown.ogg"])
     }
     // create game entities
@@ -29,14 +30,14 @@ class GameScene extends Phaser.Scene {
         this.scoreText = this.add.text(600, 25, "SCORE:0", {
             fontSize: "28px",
             fontFamily: "Arial Black",
-            stroke: "gray",
+            stroke: "black",
             strokeThickness: 5
         });
         this.topScore = localStorage.getItem("topScore") == null ? 0 : localStorage.getItem("topScore");
         this.topScoreText = this.add.text(30, 25, "MAX: " + this.topScore, {
             fontSize: "28px",
             fontFamily: "Arial Black",
-            stroke: "gray",
+            stroke: "black",
             strokeThickness: 5
         })
         this.handleScore();
@@ -52,7 +53,6 @@ class GameScene extends Phaser.Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
     }
     gameOver() {
-        console.log("Game Over");
         this.scene.pause();
         this.sound.playAudioSprite("sfx", "shot");
         localStorage.setItem("topScore", Math.max(localStorage.getItem("topScore"), this.score));
@@ -85,9 +85,7 @@ class GameScene extends Phaser.Scene {
             repeat: 0,
             callbackScope: this,
             callback: () => {
-                console.log("Line 78", this.birds.children.size);
                 bird.destroy();
-                console.log("Line 80", this.birds.children.size);
             }
         })
 
@@ -165,8 +163,11 @@ class GameScene extends Phaser.Scene {
     animation() {
         this.anims.create({
             key: "fly",
-            frames: this.anims.generateFrameNames('bird', { start: 0, end: 1 }),
-            frameRate: 20,
+            frames: [
+                { key: "bird0" },
+                { key: "bird1" },
+            ],
+            frameRate: 3, 
             repeat: -1
         })
 
@@ -224,7 +225,6 @@ class GameScene extends Phaser.Scene {
         let lastPoint = lastBlockX + this.tileWidth;
         if (lastPoint < this.sys.game.config.width) {
             this.addBase(lastPoint);
-            console.log(this.ground.children.size);
             this.ground.children.each((child) => {
                 if (child.x < -this.tileWidth * 2) {
                     child.destroy();
@@ -254,6 +254,8 @@ class TitleScene extends Phaser.Scene {
         this.tileWidth = 64;
         this.tileHeight = 64;
         this.load.image("tile", "assets/tile.png");
+        this.load.image("bird0", "assets/bat.png");
+        this.load.image("bird1", "assets/bat_fly.png");
     }
     create() {
         const Title = this.add.text(400, 200, "START NEW GAME", {
