@@ -257,7 +257,7 @@ class TitleScene extends Phaser.Scene {
         // this.load.image("bird1", "assets/bat_fly.png");
     }
     create() {
-        const Title = this.add.text(400, 200, "START NEW GAME", {
+        const Title = this.add.text(400, 200, "Runner Game", {
             fontSize: 45,
             fontFamily: "Arial Black",
             stroke: "black",
