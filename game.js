@@ -11,36 +11,36 @@ class GameScene extends Phaser.Scene {
     // load assets
     preload() {
         this.load.image("plant", "assets/cactus.png");
-        this.load.atlas("dino", "assets/atlas/sprite.png", "assets/atlas/sprite.json");
-        this.load.spritesheet("bird", "assets/bird.png", { frameWidth: 150, frameHeight: 108 });
+        this.load.image("dino", "assets/alienGreen_stand.png");
+        this.load.image("bird", "assets/bat.png");
         this.load.audioSprite("sfx", "assets/fx_mixdown.json", ["assets/fx_mixdown.mp3", "assets/fx_mixdown.ogg"])
+        this.load.image("bird0", "assets/bat.png");
+        this.load.image("bird1", "assets/bat_fly.png");
+        this.load.image("walk0", "assets/alienGreen_walk1.png");
+        this.load.image("walk1", "assets/alienGreen_walk2.png");
+        this.load.image("alienjump", "assets/alienGreen_jump.png");
     }
     // create game entities
     create() {
         // dino
-        this.dino = this.physics.add.sprite(200, 343, "dino").setOrigin(0, 0).setScale(0.17, 0.25);
-        // console.log(this.dino.width, this.dino.height);
+        this.dino = this.physics.add.sprite(200, 343, "dino").setOrigin(0, 0).setScale(0.5, 0.5);
         this.dino.setSize(this.dino.width * 0.6, this.dino.height * 0.8, false).setOffset(100, 50);
         this.dino.setGravityY(850);
-        // this.add.image(200,300,"tile").setOrigin(0,0);
         // ground
         this.ground = this.physics.add.group();
-        // this.bird = this.physics.add.sprite(350, 250, "bird");
         this.animation();
-        // this.bird.anims.play("fly");
-        // this.bird.setVelocityX(this.birdSpeed);
         // scoring
         this.scoreText = this.add.text(600, 25, "SCORE:0", {
             fontSize: "28px",
             fontFamily: "Arial Black",
-            stroke: "gray",
+            stroke: "black",
             strokeThickness: 5
         });
         this.topScore = localStorage.getItem("topScore") == null ? 0 : localStorage.getItem("topScore");
         this.topScoreText = this.add.text(30, 25, "MAX: " + this.topScore, {
             fontSize: "28px",
             fontFamily: "Arial Black",
-            stroke: "gray",
+            stroke: "black",
             strokeThickness: 5
         })
         this.handleScore();
@@ -49,16 +49,13 @@ class GameScene extends Phaser.Scene {
         this.spawnBird();
         this.spawnPlant();
         this.dino.anims.play("idle");
-        // this.dino.setCollideWorldBounds(true);
         this.physics.add.collider(this.dino, this.ground);
         this.physics.add.collider(this.dino, this.birds, this.gameOver, null, this);
         this.physics.add.collider(this.dino, this.plants, this.gameOver, null, this);
         this.physics.add.collider(this.plants, this.ground);
         this.cursors = this.input.keyboard.createCursorKeys();
-        // console.log(this.cursors);
     }
     gameOver() {
-        console.log("Game Over");
         this.scene.pause();
         this.sound.playAudioSprite("sfx", "shot");
         localStorage.setItem("topScore", Math.max(localStorage.getItem("topScore"), this.score));
@@ -91,9 +88,7 @@ class GameScene extends Phaser.Scene {
             repeat: 0,
             callbackScope: this,
             callback: () => {
-                console.log("Line 78", this.birds.children.size);
                 bird.destroy();
-                console.log("Line 80", this.birds.children.size);
             }
         })
 
@@ -108,7 +103,7 @@ class GameScene extends Phaser.Scene {
             callback: () => {
                 let scale = Math.random();
                 if (scale <= 0.4) {
-                    // create 2 plants
+                    // creates 2 plants
                     scale = 0.6;
                     this.generatePlant(scale);
                 } else if (scale > 0.9) {
@@ -152,9 +147,6 @@ class GameScene extends Phaser.Scene {
                 }
             })
         }
-        // console.log("pSize: ",this.plants.children.size)
-
-
 
     }
     handleScore() {
@@ -174,52 +166,49 @@ class GameScene extends Phaser.Scene {
     animation() {
         this.anims.create({
             key: "fly",
-            frames: this.anims.generateFrameNames('bird', { start: 0, end: 1 }),
-            frameRate: 20,
+            frames: [
+                { key: "bird0" },
+                { key: "bird1" },
+            ],
+            frameRate: 3, 
             repeat: -1
         })
 
         // dino
         this.anims.create({
             key: "idle",
-            frames: this.anims.generateFrameNames("dino", {
-                start: 1,
-                end: 10,
-                prefix: "Idle_",
-                zeroPad: 2,
-                suffix: ".png",
-            }),
-            frameRate: 15,
+            frames: [
+                { key: "dino" },
+            ],
+            frameRate: 1,
             repeat: -1
         });
         this.anims.create({
             key: "run",
-            frames: this.anims
-                .generateFrameNames('dino', {
-                    start: 1, end: 8, zeroPad: 2,
-                    prefix: "Run_", suffix: ".png"
-                }),
-            frameRate: 15,
+            frames: [
+                { key: "walk0" },
+                { key: "walk1" },
+            ],
+            frameRate: 3, 
             repeat: -1
         });
         this.anims.create({
             key: "jump",
-            frames: this.anims.generateFrameNames('dino', {
-                start: 1, end: 12, zeroPad: 2, prefix: "Jump_", suffix: ".png"
-            }),
-            frameRate: 10,
+            frames: [
+                { key: "alienjump" },
+            ],
+            frameRate: 1, 
         });
     }
     update() {
 
         this.handleInput();
         // create endless ground
-        // console.log("I ran");
         this.updateGround()
 
     }
     handleInput() {
-        // control
+        // controls
         if (this.cursors.space.isDown && this.dino.body.touching.down) {
             this.dino.setVelocityY(-500);
             this.dino.anims.play("jump");
@@ -234,7 +223,6 @@ class GameScene extends Phaser.Scene {
         let lastPoint = lastBlockX + this.tileWidth;
         if (lastPoint < this.sys.game.config.width) {
             this.addBase(lastPoint);
-            console.log(this.ground.children.size);
             this.ground.children.each((child) => {
                 if (child.x < -this.tileWidth * 2) {
                     child.destroy();
@@ -264,20 +252,21 @@ class TitleScene extends Phaser.Scene {
         this.tileWidth = 64;
         this.tileHeight = 64;
         this.load.image("tile", "assets/tile.png");
+        // this.load.image("bird0", "assets/bat.png");
+        // this.load.image("bird1", "assets/bat_fly.png");
     }
     create() {
-        // alert("Hello from Title");
         const Title = this.add.text(400, 200, "START NEW GAME", {
             fontSize: 45,
             fontFamily: "Arial Black",
-            stroke: "gray",
+            stroke: "black",
             strokeThickness: 5
         })
         Title.setOrigin(0.5, 0.5);
         const spaceText = this.add.text(400, 250, "PRESS SPACE TO START", {
             fontSize: 22,
             fontFamily: "Arial Black",
-            stroke: "gray",
+            stroke: "black",
             strokeThickness: 5
         })
         spaceText.setOrigin(0.5, 0.5)
@@ -287,7 +276,6 @@ class TitleScene extends Phaser.Scene {
         this.input.keyboard.once("keydown-SPACE", () => {
             this.scene.start("game");
         })
-        // console.log("hello from title");
     }
 
     addBase(x) {
@@ -310,18 +298,17 @@ class RestartScene extends Phaser.Scene {
         this.tileHeight = 64;
     }
     create() {
-        // alert("Hello from Title");
-        const Title = this.add.text(400, 200, "RESTART GAME", {
-            fontSize: 45,
+        const Title = this.add.text(400, 200, "Game By Marvel McDowell and Dylan Boyer With Thanks To KennyAssets", {
+            fontSize: 10,
             fontFamily: "Arial Black",
-            stroke: "gray",
+            stroke: "black",
             strokeThickness: 5
         })
         Title.setOrigin(0.5, 0.5);
         const spaceText = this.add.text(400, 250, "PRESS SPACE TO RESTART", {
             fontSize: 22,
             fontFamily: "Arial Black",
-            stroke: "gray",
+            stroke: "black",
             strokeThickness: 5
         })
         spaceText.setOrigin(0.5, 0.5)
@@ -331,7 +318,6 @@ class RestartScene extends Phaser.Scene {
         this.input.keyboard.once("keydown-SPACE", () => {
             this.scene.start("game");
         })
-        // console.log("hello from title");
     }
 
     addBase(x) {
